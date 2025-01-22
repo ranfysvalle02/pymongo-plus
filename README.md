@@ -12,14 +12,14 @@ PymongoPlus elevates your MongoDB and PyMongo experience by reducing the amount 
    
 ## The Challenge with Standard MongoClient  
    
-#### **1. Why Customize MongoClient?**
+#### **Why Customize MongoClient?**
 - **Streamlined Operations**: Simplify frequent tasks like listing databases and collections.
 - **Encapsulation**: Abstract additional functionality into a single, reusable class.
 - **Extensibility**: Add new methods to tailor MongoDB operations to your project’s needs.
 
 ---
 
-#### **2. Setting Up the Environment**
+#### **Setting Up the Environment**
 Before diving into code, we’ll need a MongoDB instance to work with. A simple command to start a local MongoDB container:
 
 ```bash
