@@ -44,14 +44,6 @@ Creating advanced indexes, such as vector search indexes, can be complex and err
 - **Time-Saving**: Eliminates the need to write and debug index creation code.  
 - **Flexibility**: Easily customize index properties as needed.  
    
-### 3. **Seamless AI Integration**  
-   
-Integrating AI functionalities, like obtaining embeddings from OpenAI, often requires additional code and handling:  
-   
-- **Integration**: PymongoPlus allows you to integrate embedding functions directly into your database operations.  
-- **Abstraction**: Hides the complexity of calling external APIs.  
-- **Productivity**: Lets you focus on building features rather than plumbing code.  
-   
 ---  
    
 ## Impact on Development Workflow  
@@ -118,7 +110,6 @@ You might write several lines of code to:
 A few method calls handle the entire process:  
    
 ```python  
-client.create_if_not_exists(database_name, collection_name)  
 client._create_search_index(database_name, collection_name, index_name, get_embedding)  
 ```  
    
