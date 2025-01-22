@@ -109,7 +109,48 @@ class PymongoPlus(MongoClient):
         except Exception as e:
             logger.error(f"Failed to create search index '{index_name}': {e}")
             raise e
+    def search(
+        self, query: str, limit: int = 5, database_name:str = "", collection_name:str = "", index_name: str = "", filters: Optional[Dict[str, Any]] = None
+    ) -> List[Document]:
+        """Search the MongoDB collection for documents relevant to the query."""
+        query_embedding = get_embedding(query)
+        if not self.index_exists(database_name, collection_name, index_name):
+            logger.error(f"Index {index_name} does not exist.")
+            return []
+        if query_embedding is None:
+            logger.error(f"Failed to generate embedding for query: {query}")
+            return []
 
+        try:
+            pipeline = [
+                {
+                    "$vectorSearch": {
+                        "index": index_name,
+                        "limit": 10,
+                        "numCandidates": 10,
+                        "queryVector": self.embedder.get_embedding(query),
+                        "path": "embedding",
+                    }
+                },
+                {"$set": {"score": {"$meta": "vectorSearchScore"}}},
+            ]
+            pipeline.append({"$project": {"embedding": 0}})
+            agg = list(self._collection.aggregate(pipeline))
+            docs = []
+            for doc in agg:
+                docs.append(
+                    Document(
+                        id=str(doc["_id"]),
+                        name=doc.get("name"),
+                        content=doc["content"],
+                        meta_data=doc.get("meta_data", {}),
+                    )
+                )
+            logger.info(f"Search completed. Found {len(docs)} documents.")
+            return docs
+        except Exception as e:
+            logger.error(f"Error during search: {e}")
+            return []
     def index_exists(self, database_name: str, collection_name: str, index_name: str) -> bool:
         """
         Check if the search index exists.
