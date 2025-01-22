@@ -151,6 +151,32 @@ class PymongoPlus(MongoClient):
         except Exception as e:
             logger.error(f"Error during search: {e}")
             return []
+    def keyword_search(self, query: str, limit: int = 5) -> List[Document]:
+        """Perform a keyword-based search."""
+        try:
+            cursor = self._collection.find(
+                {"content": {"$regex": query, "$options": "i"}},
+                {"_id": 1, "name": 1, "content": 1, "meta_data": 1},
+            ).limit(limit)
+            results = [
+                Document(
+                    id=str(doc["_id"]),
+                    name=doc.get("name"),
+                    content=doc["content"],
+                    meta_data=doc.get("meta_data", {}),
+                )
+                for doc in cursor
+            ]
+            logger.debug(f"Keyword search completed. Found {len(results)} documents.")
+            return results
+        except Exception as e:
+            logger.error(f"Error during keyword search: {e}")
+            return []
+
+    def hybrid_search(self, query: str, limit: int = 5) -> List[Document]:
+        """Perform a hybrid search combining vector and keyword-based searches."""
+        logger.debug("Performing hybrid search is not yet implemented.")
+        return []
     def index_exists(self, database_name: str, collection_name: str, index_name: str) -> bool:
         """
         Check if the search index exists.
