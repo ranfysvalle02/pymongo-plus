@@ -2,6 +2,7 @@
 
 ---
 
+```
 from pymongo import *  # Import everything from the original pymongo module
 from pymongo import MongoClient as RealMongoClient  # Import the real MongoClient
 
@@ -42,3 +43,4 @@ if __name__ == "__main__":
 """
 docker run -d -p 27017:27017 --restart unless-stopped mongodb/mongodb-atlas-local
 """
+```
